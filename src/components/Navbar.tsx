@@ -4,7 +4,6 @@ export interface NavLinkItem {
   id: string;
   title: string;
   to: string;
-  button?: boolean; // optional styling flag
 }
 
 interface NavbarProps {
@@ -40,9 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({
             <Link
               to={nav.to}
               onClick={handleScrollToTop}
-              className={`font-poppins text-white text-sm lg:text-base ${
-                nav.button ? "btn-class" : ""
-              }`}
+              className={`font-poppins text-white text-sm lg:text-base`}
             >
               {nav.title}
             </Link>
@@ -69,9 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({
               key={nav.id}
               to={nav.to}
               onClick={handleScrollToTop}
-              className={`font-poppins text-white text-base ${
-                nav.button ? "btn-class" : ""
-              }`}
+              className={`font-poppins text-white text-base`}
             >
               {nav.title}
             </Link>

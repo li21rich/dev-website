@@ -8,7 +8,7 @@ import type { NavLinkItem } from "./components/Navbar";
 import Cursor from "./components/Cursor";
 const navLinks: NavLinkItem[] = [
   { id: "1", title: "home", to: "/" },
-  { id: "3", title: "resume", to: "/resume", button: true },
+  { id: "2", title: "resume", to: "/resume" },
 ];
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
