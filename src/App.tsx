@@ -2,13 +2,13 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 
 import Home from "./pages/Home";
-import Resume from "./pages/Resume";
+import Agent from "./pages/projects/Agent";
 import Navbar from "./components/Navbar"
 import type { NavLinkItem } from "./components/Navbar";
 import Cursor from "./components/Cursor";
 const navLinks: NavLinkItem[] = [
   { id: "1", title: "home", to: "/" },
-  { id: "2", title: "resume", to: "/resume" },
+  { id: "2", title: "agent", to: "/agent" },
 ];
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -26,7 +26,7 @@ const App: React.FC = () => {
         <Navbar links={navLinks}/>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/resume" element={<Resume />} />
+          <Route path="/agent" element={<Agent />} />
         </Routes>
       </Router>
       <Cursor />

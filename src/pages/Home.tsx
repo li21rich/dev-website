@@ -13,7 +13,7 @@ const Home = () => {
     <>
       <ReactiveNodeBackground />
 
-      <div className="relative z-10 px-4 py-8">
+      <div className="relative z-10 px-4 py-8 text-primary">
         <h1 className="text-4xl font-bold mb-4">Richard Li</h1>
 
         <SlideIn direction="left">
@@ -22,7 +22,7 @@ const Home = () => {
           </FadeIn>
         </SlideIn>
 
-        <ArrowButton label="Hello world" to="/home" />
+        <ArrowButton label="Hello world" to="/home"/>
         <div className="my-8 h-[400px] w-full relative">
           <Brusher image="lakemendota.jpg" />
         </div>

@@ -13,7 +13,7 @@ const ArrowButton: React.FC<ArrowButtonProps> = ({
   label,
   to,
   color = "#FF6F00",
-  textcolor = "black",
+  textcolor = "#FF6F00",
   scrollToId = null,
 }) => {
   const navigate = useNavigate();
@@ -78,7 +78,7 @@ const ButtonContent = (
           href={to}
           target="_blank"
           rel="noopener noreferrer"
-          className="group relative inline-flex font-poppins font-normal hover:!text-white transition-colors duration-300"
+          className="group relative inline-flex font-poppins font-normal hover:!text-black transition-colors duration-300"
           style={{ color: textcolor }}
         >
           {ButtonContent}
@@ -86,7 +86,7 @@ const ButtonContent = (
       ) : (
         <button
           onClick={handleInternalClick}
-          className="group relative inline-flex font-poppins font-normal hover:!text-white transition-colors duration-300"
+          className="group relative inline-flex font-poppins font-normal hover:!text-black transition-colors duration-300"
           style={{ color: textcolor }}
         >
           {ButtonContent}

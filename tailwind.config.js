@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-const plugin = require('tailwindcss/plugin')
 
 export default {
   content: [
@@ -14,16 +13,16 @@ export default {
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
       },
-    }
-  },
-  screens: {
-        'sm': '650px',
-        'md': '768px',
-        'mm': '888px',
-        'lg': '1024px',
-        'xl': '1280px',
-        'xxl': '1636px',
-        'xxxl': '2300px',
     },
+    screens: {
+      sm: '650px',
+      md: '768px',
+      mm: '888px',
+      lg: '1024px',
+      xl: '1280px',
+      xxl: '1636px',
+      xxxl: '2300px',
+    },
+  },
   plugins: [],
 }
