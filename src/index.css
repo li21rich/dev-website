@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import "tailwindcss";
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body, * {
+  cursor: none !important;
+}
+
+body {
+  background-color: #000000 !important;
+  overflow-x: hidden !important;
+  margin: 0;
+}
+
+* {
+  scroll-behavior: smooth;
+}
