@@ -6,7 +6,6 @@ interface SlideInProps {
   delay?: number;
   duration?: number;
   className?: string;
-  once?: boolean;
 }
 
 const SlideIn: React.FC<SlideInProps> = ({ 
@@ -15,7 +14,6 @@ const SlideIn: React.FC<SlideInProps> = ({
   delay = 0, 
   duration = 500, 
   className = '',
-  once = true,
 }) => {
   const [startAnimation, setStartAnimation] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -25,7 +23,6 @@ const SlideIn: React.FC<SlideInProps> = ({
         ([entry]) => { // destructured
         if (entry.isIntersecting) {
             setStartAnimation(true);
-            if (once) observer.disconnect();
         }
         },
         { threshold: 0.1 }
@@ -36,7 +33,7 @@ const SlideIn: React.FC<SlideInProps> = ({
     }
 
     return () => observer.disconnect();
-    }, [once]);
+    }, []);
 
 
   const getSlideStyles = (): React.CSSProperties => {

@@ -32,6 +32,10 @@ const Cursor: React.FC = () => {
       }
     };
 
+    // 🔥 NEW: hover broadcast handlers
+    const hoverOn = () => setHovered(true);
+    const hoverOff = () => setHovered(false);
+
     const handleClick = () => {
       setShowCursor(true);
       setClicked(true);
@@ -46,18 +50,21 @@ const Cursor: React.FC = () => {
     document.body.addEventListener('mouseleave', handleMouseLeave, true);
     document.body.addEventListener('mousedown', handleClick, true);
 
-    // Center cursor and simulate click on load
-    const centerCursor = () => {
-      setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-      handleClick();
-    };
-    centerCursor();
+    // 🔥 listen globally
+    window.addEventListener('hover-broadcast-on', hoverOn);
+    window.addEventListener('hover-broadcast-off', hoverOff);
+
+    // center on load
+    setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+    handleClick();
 
     return () => {
       window.removeEventListener('mousemove', moveCursor);
       document.body.removeEventListener('mouseenter', handleMouseEnter, true);
       document.body.removeEventListener('mouseleave', handleMouseLeave, true);
       document.body.removeEventListener('mousedown', handleClick, true);
+      window.removeEventListener('hover-broadcast-on', hoverOn);
+      window.removeEventListener('hover-broadcast-off', hoverOff);
     };
   }, []);
 

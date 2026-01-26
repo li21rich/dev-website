@@ -28,6 +28,12 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/agent" element={<Agent />} />
         </Routes>
+        <div
+          className="fixed bottom-0 left-0 w-full pb-3 py-14 pointer-events-none z-50"
+          style={{
+            background: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)",
+          }}>
+        </div>
       </Router>
       <Cursor />
     </div>

@@ -27,19 +27,19 @@ const Navbar: React.FC<NavbarProps> = ({
   return (
     <nav
       id="navbar"
-      className={`w-full flex py-4 justify-between items-center px-4 ${
+      className={`w-full flex py-3 pb-14 justify-between items-center pl-4 pr-8 ${
         sticky ? "sticky top-0 z-50" : ""
-      } bg-black bg-opacity-80 border-b border-white`}
+      } bg-gradient-to-b from-black/100 to-black/0`}
     >
 
       {/* Desktop Menu */}
-      <ul className="hidden sm:flex items-center flex-1 justify-end gap-6">
+      <ul className="hidden sm:flex items-center flex-1 justify-end gap-8">
         {links.map((nav) => (
           <li key={nav.id}>
             <Link
               to={nav.to}
               onClick={handleScrollToTop}
-              className={`font-poppins text-white text-sm lg:text-base`}
+              className={`font-poppins text-primary-reddish text-sm lg:text-lg`}
             >
               {nav.title}
             </Link>

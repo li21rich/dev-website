@@ -12,8 +12,8 @@ interface ArrowButtonProps {
 const ArrowButton: React.FC<ArrowButtonProps> = ({
   label,
   to,
-  color = "#FF6F00",
-  textcolor = "#FF6F00",
+  color = "#ff4a08",
+  textcolor = "#ff4a08",
   scrollToId = null,
 }) => {
   const navigate = useNavigate();
@@ -41,9 +41,9 @@ const ArrowButton: React.FC<ArrowButtonProps> = ({
   };
 
 const ButtonContent = (
-    <div className="relative inline-flex items-center">
+    <div className="z-15 mb-1 relative inline-flex items-center">
       <div
-        className="absolute left-0 w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-300 ease-out group-hover:w-full overflow-hidden bg-transparent"
+        className="absolute left-0 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300 ease-out group-hover:w-full overflow-hidden bg-transparent"
         style={{ borderColor: color }}
       >
         <span
@@ -51,7 +51,7 @@ const ButtonContent = (
           style={{ backgroundColor: color }}
         ></span>
         <svg
-          className="absolute left-3 z-10 w-4 h-4 transition-all duration-300 group-hover:text-black"
+          className="absolute ml-[0.8px] z-10 w-4 h-4 transition-all duration-300 group-hover:text-black"
           style={{ color }}
           fill="none"
           stroke="currentColor"
@@ -65,7 +65,7 @@ const ButtonContent = (
           />
         </svg>
       </div>
-      <span className="relative z-10 mx-[3.25rem] font-normal text-lg mr-12">
+      <span className="relative z-10 mx-[3rem] font-normal text-[18px] mr-12">
         {label}
       </span>
     </div>

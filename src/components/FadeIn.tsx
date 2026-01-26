@@ -5,7 +5,6 @@ interface FadeInProps {
   delay?: number;
   duration?: number;
   className?: string;
-  once?: boolean; // optional, default true
 }
 
 const FadeIn: React.FC<FadeInProps> = ({
@@ -13,26 +12,21 @@ const FadeIn: React.FC<FadeInProps> = ({
   delay = 0,
   duration = 1000,
   className = '',
-  once = true,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const domRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-  const observer = new IntersectionObserver(([entry]) => {
-    if (entry.isIntersecting) {
-      setIsVisible(true);
-      if (once && domRef.current) {
-        observer.unobserve(domRef.current);
-      }
-    } else if (!once) {
-      setIsVisible(false);
-    }
-  }, { threshold: 0.1 });
+   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
 
-  if (domRef.current) observer.observe(domRef.current);
-  return () => observer.disconnect();
-}, [once]);
+    if (domRef.current) observer.observe(domRef.current);
+    return () => observer.disconnect();
+}, []);
 
 
   const fadeInStyle: React.CSSProperties = {

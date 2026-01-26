@@ -1,6 +1,25 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 @import "tailwindcss";
 
+@theme {
+  --breakpoint-sm: 650px;
+  --breakpoint-md: 768px;
+  --breakpoint-mm: 888px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-xxl: 1636px;
+  --breakpoint-xxxl: 1920px;
+  --font-display: "Poppins", sans-serif;
+  --color-avocado-100: oklch(0.99 0 0);
+  --color-avocado-200: oklch(0.98 0.04 113.22);
+  --color-avocado-300: oklch(0.94 0.11 115.03);
+  --color-avocado-400: oklch(0.92 0.19 114.08);
+  --color-avocado-500: oklch(0.84 0.18 117.33);
+  --color-avocado-600: oklch(0.53 0.12 118.34);
+  --color-primary-light: #FF6F00;
+  --color-primary-reddish: #ff4a08;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   text-rendering: optimizeLegibility;
@@ -8,6 +27,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+* {
+  scroll-behavior: smooth;
+}
 body, * {
   cursor: none !important;
 }
@@ -18,6 +41,11 @@ body {
   margin: 0;
 }
 
-* {
-  scroll-behavior: smooth;
+html, body {
+  scrollbar-width: none;   
+  -ms-overflow-style: none; 
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;           
 }
