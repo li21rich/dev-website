@@ -18,6 +18,13 @@ interface Node {
   layer: number;
 }
 
+function hexToRgb(hex: string) {
+  const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+  if (!m) return [255, 111, 0]; // fallback
+  return [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)];
+}
+
+
 const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
   nodeCount = 950,
   cursorEdgeDistance = 200,
@@ -99,17 +106,13 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
         const drawY = n.y - scrollOffset * depthFactor;
 
         if (drawY < -50 || drawY > canvas.height + 50) return;
-
-        // subtle brightness boost for front layers
-        ctx.globalAlpha = 0.86 + 1.2 * (n.layer / (layers - 1));
-
-        ctx.fillStyle = nodeColor;
+        
+        const [r, g, b] = hexToRgb(nodeColor);
+        ctx.fillStyle = `rgba(${r},${g},${b},${0.6 + 0.4 * (n.layer / (layers - 1))})`;
         ctx.beginPath();
-        ctx.arc(drawX, drawY, 0.8, 0, Math.PI * 2);
+        ctx.arc(drawX, drawY, 0.94, 0, Math.PI * 2);
         ctx.fill();
       });
-      ctx.globalAlpha = 1;
-
       // Draw edges after nodes
       if (cursor) {
         nodesRef.current.forEach((n) => {

@@ -42,7 +42,7 @@ const Cursor: React.FC = () => {
       setTimeout(() => {
         setClicked(false);
         if (isMobile) setShowCursor(false);
-      }, 380);
+      }, 300);
     };
 
     window.addEventListener('mousemove', moveCursor);
