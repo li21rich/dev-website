@@ -30,10 +30,10 @@ const Home = () => {
       <SlideIn direction="top" delay={200} duration = {1600} className="z-10 relative">
         <FadeIn>
           <div className="relative sm:ml-32 sm:mt-16 p-4 text-primary-reddish">
-            <h1 className="text-5xl font-bold mb-4">Richard Li</h1>
-            <p className="text-[18px] mb-4">CS (& Math) @ UW-Madison</p>
-            <ArrowButton label="GitHub" to="https://github.com/li21rich/"/>
-            <ArrowButton label="LinkedIn" to="https://www.linkedin.com/in/richard-h-li/"/>
+            <h1 className="text-5xl font-bold mb-4">richard li</h1>
+            <p className="text-[18px] mb-4">cs (& math) @ uw-madison</p>
+            <ArrowButton label="github" to="https://github.com/li21rich/"/>
+            <ArrowButton label="linkedin" to="https://www.linkedin.com/in/richard-h-li/"/>
           </div>
         </FadeIn>
       </SlideIn>
