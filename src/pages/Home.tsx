@@ -5,15 +5,23 @@ import FadeIn from "../components/FadeIn";
 import PanelCarousel from "../components/PanelCarousel";
 import SlideIn from "../components/SlideIn";
 import ReactiveNodeBackground from "../components/ReactiveNodeBackground";
-import lakeImg from "../assets/lakemendota.jpg";
+import LakeImg from "../assets/lakemendota.jpg";
+import AgentImg from "../assets/agent.png";
+import PythonSvg from "../assets/python.svg";
+import PyTorchSvg from "../assets/pytorch.svg";
+import FlySvg from "../assets/fly.svg";
+import DockerSvg from "../assets/docker.svg";
+import GeminiSvg from "../assets/gemini.svg";
+import HuggingFaceSvg from "../assets/huggingface.svg";
 
 const panels = [
   {
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
-    link: "/agent"
+    image: AgentImg,
+    link: "/agent",
+    stack: [PythonSvg, PyTorchSvg, HuggingFaceSvg, DockerSvg, FlySvg, GeminiSvg]
   },
   {
-    image: lakeImg,
+    image: LakeImg,
     link: "https://yourlink.com",
   },
   {
@@ -39,7 +47,7 @@ const Home = () => {
       </SlideIn>
       <PanelCarousel panels={panels} className = "mt-46 mb-30  overflow-auto"/>  
       <div className="mt-120 w-full h-[200px]">
-        <Brusher image={lakeImg} />
+        <Brusher image={LakeImg} />
       </div>
       <Cursor />
     </>

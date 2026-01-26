@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 interface Panel {
   image: string;
   link: string;
+  stack?: string[];
 }
 
 interface PanelCarouselProps {
@@ -17,9 +18,9 @@ const DRAG_THRESHOLD = 5;
 
 const PanelCarousel: React.FC<PanelCarouselProps> = ({
   panels,
-  radius = 300,
-  panelWidth = 280,
-  panelHeight = 280,
+  radius = 290,
+  panelWidth = 305,
+  panelHeight = 200,
   className = "",
 }) => {
   const [rotationY, setRotationY] = useState(0);
@@ -37,7 +38,6 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
 
   // --- Drag Handling ---
   const onMouseDown = (e: React.MouseEvent) => {
-    // This event bubbles up from either the Background Layer OR a Panel
     startX.current = e.clientX;
     lastX.current = e.clientX;
     didSpin.current = false;
@@ -45,7 +45,6 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
   };
 
   const onMouseMoveGlobal = (e: MouseEvent) => {
-    // 1. Tilt (Always active)
     if (!isDragging && containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
       const offsetX = (e.clientX - rect.left - rect.width / 2) / rect.width;
@@ -56,14 +55,12 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
 
     if (!mouseIsDown.current) return;
 
-    // 2. Detect Drag Start
     const dx = e.clientX - startX.current;
     if (!isDragging && Math.abs(dx) >= DRAG_THRESHOLD) {
       setIsDragging(true);
-      setHoveredIndex(null); // Kill hover immediately
+      setHoveredIndex(null);
     }
 
-    // 3. Perform Rotation
     if (isDragging) {
       const deltaX = e.clientX - lastX.current;
       lastX.current = e.clientX;
@@ -117,7 +114,6 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
     <div
       ref={containerRef}
       className={className}
-      // Bubbling Point: Captures mousedown from the BackLayer OR the Panels
       onMouseDown={onMouseDown} 
       onDragStart={(e) => e.preventDefault()}
       style={{
@@ -129,30 +125,9 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
         perspective: "1200px",
         overflow: "visible",
         cursor: isDragging ? "grabbing" : "grab",
-        // CRITICAL FIX: The container itself ignores mouse events.
-        // This prevents the "glass window" effect blocking backfaces.
         pointerEvents: "none", 
       }}
     >
-      {/* 
-        LAYER 1: The Drag Surface
-        This fills the empty space. It catches clicks where there are no panels.
-        It sits at z-index 0.
-      */}
-      <div 
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          zIndex: 0,
-          pointerEvents: "auto", // Can be clicked/dragged
-        }}
-      />
-
-      {/* 
-        LAYER 2: The 3D Scene
-        This sits on top (z-index 10).
-      */}
       <div
         style={{
           width: "100%",
@@ -162,7 +137,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
           transform: `rotateX(${tiltX}deg) rotateY(${rotationY + tiltY}deg)`,
           transition: isDragging ? "none" : "transform 0.5s ease-out",
           zIndex: 10,
-          pointerEvents: "none", // Ensure the transformation layer doesn't block rays
+          pointerEvents: "none",
         }}
       >
         {panels.map((panel, index) => {
@@ -190,25 +165,61 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
                 backfaceVisibility: "visible",
                 cursor: "pointer",
                 transition: "box-shadow 0.2s ease",
-                // CRITICAL FIX: Panels are the ONLY thing in the 3D layer that accept events.
-                // This ensures "rays" pass through everything else to hit them.
                 pointerEvents: "auto", 
-                backgroundColor: "rgba(255,255,255,0.01)" // Ensures hit-area solidity
+                backgroundColor: "rgba(255,255,255,0.01)" 
               }}
             >
               <div
                 style={{
                   width: "100%",
                   height: "100%",
+                  backgroundColor: "rgba(255, 74, 8, 0.6)",
+                  
+                  // Background Image
                   backgroundImage: `url(${panel.image})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
+                  backgroundSize: "contain",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "left",
+                  
+                  // Layout
+                  display: "flex",
+                  // CHANGED: 'flex-start' makes items align to the top
+                  alignItems: "flex-start", 
+                  
                   borderRadius: 10,
                   pointerEvents: "none",
-                  opacity: isHovered ? 1 : 0.85,
+                  opacity: isHovered ? 1 : 0.79,
                   transition: "opacity 0.2s ease",
                 }}
-              />
+              >
+                {/* Tech Stack Icons */}
+                {panel.stack && (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "4px",
+                      zIndex: 2,
+                      marginLeft: "273px",
+                      marginTop: "7px" 
+                    }}
+                  >
+                    {panel.stack.map((iconUrl, i) => (
+                      <img 
+                        key={i} 
+                        src={iconUrl} 
+                        alt="tech-icon"
+                        style={{
+                          width: "26px",
+                          height: "26px",
+                          objectFit: "contain",
+                          filter: "drop-shadow(0px 1px 2px rgba(0,0,0,0.3))"
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             </a>
           );
         })}
