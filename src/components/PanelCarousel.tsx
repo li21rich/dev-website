@@ -29,6 +29,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isFlattened, setIsFlattened] = useState(false);
 
   const startX = useRef(0);
   const lastX = useRef(0);
@@ -48,7 +49,8 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
   }, []);
 
   // Responsive sizing
-  const responsiveRadius = isMobile ? Math.min(radius * 0.6, 200) : radius;
+  const baseRadius = isMobile ? Math.min(radius * 0.6, 200) : radius;
+  const responsiveRadius = isFlattened ? baseRadius * .6 : baseRadius;
   const responsivePanelWidth = isMobile ? Math.min(panelWidth * 0.7, 220) : panelWidth;
   const responsivePanelHeight = isMobile ? Math.min(panelHeight * 0.7, 150) : panelHeight;
 
@@ -161,119 +163,191 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
     console.log("Navigating to:", link);
   };
 
+  // --- Toggle Button Handler ---
+  const toggleFlatten = () => {
+    setIsFlattened(!isFlattened);
+  };
+
   return (
-    <div
-      ref={containerRef}
-      className={className}
-      onMouseDown={onMouseDown}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-      onDragStart={(e) => e.preventDefault()}
-      style={{
-        width: "100%",
-        height: `${responsivePanelHeight + 100}px`,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        perspective: isMobile ? "800px" : "1200px",
-        overflow: "visible",
-        cursor: isDragging ? "grabbing" : "grab",
-        pointerEvents: "none",
-        touchAction: "none",
-      }}
-    >
+    <div style={{ position: "relative", width: "100%" }}>
+      {/* Toggle Switch */}
       <div
         style={{
-          width: "100%",
-          height: "100%",
-          position: "relative",
-          transformStyle: "preserve-3d",
-          transform: `rotateX(${tiltX}deg) rotateY(${rotationY + tiltY}deg)`,
-          transition: isDragging ? "none" : "transform 0.5s ease-out",
-          zIndex: 10,
-          pointerEvents: "none",
+          position: "absolute",
+          top: isMobile ? "-190px" : "-170px",
+          left: isMobile ? "105px" : "245px",
+          transform: "translateX(-50%)",
+          zIndex: 1000,
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          pointerEvents: "auto",
         }}
       >
-        {panels.map((panel, index) => {
-          const angle = (360 / panels.length) * index;
-          const isHovered = hoveredIndex === index;
+        <span
+          style={{
+            fontSize: isMobile ? "13px" : "15px",
+            fontWeight: "500",
+            color: isFlattened ? "#666" : "#FF4A08",
+            transition: "color 0.3s ease",
+          }}
+        >
+          Carousel
+        </span>
+        <button
+          onClick={toggleFlatten}
+          style={{
+            position: "relative",
+            width: isMobile ? "48px" : "56px",
+            height: isMobile ? "26px" : "30px",
+            backgroundColor: isFlattened ? "#FF4A08" : "#ddd",
+            borderRadius: "15px",
+            border: "none",
+            cursor: "pointer",
+            transition: "background-color 0.3s ease",
+            boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: "3px",
+              left: isFlattened ? (isMobile ? "25px" : "29px") : "3px",
+              width: isMobile ? "20px" : "24px",
+              height: isMobile ? "20px" : "24px",
+              backgroundColor: "white",
+              borderRadius: "50%",
+              transition: "left 0.3s ease",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+            }}
+          />
+        </button>
+        <span
+          style={{
+            fontSize: isMobile ? "13px" : "15px",
+            fontWeight: "500",
+            color: isFlattened ? "#FF4A08" : "#666",
+            transition: "color 0.3s ease",
+          }}
+        >
+          Flipbook
+        </span>
+      </div>
 
-          return (
-            <a
-              key={index}
-              href={panel.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => handlePanelClick(e, panel.link)}
-              onMouseEnter={() => !isDragging && !isMobile && setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              draggable={false}
-              style={{
-                position: "absolute",
-                width: responsivePanelWidth,
-                height: responsivePanelHeight,
-                left: "50%",
-                top: "50%",
-                transformStyle: "preserve-3d",
-                transform: `translate(-50%, -50%) rotateY(${angle}deg) translateZ(${responsiveRadius}px)`,
-                borderRadius: isMobile ? 6 : 10,
-                display: "block",
-                backfaceVisibility: "visible",
-                cursor: "pointer",
-                transition: "box-shadow 0.2s ease",
-                pointerEvents: "auto",
-                backgroundColor: "rgba(255,255,255,0.01)",
-              }}
-            >
-              <div
+      <div
+        ref={containerRef}
+        className={className}
+        onMouseDown={onMouseDown}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        onDragStart={(e) => e.preventDefault()}
+        style={{
+          width: "100%",
+          height: `${responsivePanelHeight + 100}px`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          perspective: isMobile ? "800px" : "1200px",
+          overflow: "visible",
+          cursor: isDragging ? "grabbing" : "grab",
+          pointerEvents: "none",
+          touchAction: "none",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            transformStyle: "preserve-3d",
+            transform: `rotateX(${tiltX}deg) rotateY(${rotationY + tiltY}deg)`,
+            transition: isDragging ? "none" : "transform 0.5s ease-out",
+            zIndex: 10,
+            pointerEvents: "none",
+          }}
+        >
+          {panels.map((panel, index) => {
+            const angle = (360 / panels.length) * index;
+            const isHovered = hoveredIndex === index;
+            const panelRotation = isFlattened ? -90 : 0;
+
+            return (
+              <a
+                key={index}
+                href={panel.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => handlePanelClick(e, panel.link)}
+                onMouseEnter={() => !isDragging && !isMobile && setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                draggable={false}
                 style={{
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "rgba(255, 74, 8, 0.6)",
-                  backgroundImage: `url(${panel.image})`,
-                  backgroundSize: isMobile ? "cover" : "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: isMobile ? "center" : "left",
-                  display: "flex",
-                  alignItems: "flex-start",
+                  position: "absolute",
+                  width: responsivePanelWidth,
+                  height: responsivePanelHeight,
+                  left: "50%",
+                  top: "50%",
+                  transformStyle: "preserve-3d",
+                  transform: `translate(-50%, -50%) rotateY(${angle}deg) translateZ(${responsiveRadius}px) rotateY(${panelRotation}deg)`,
                   borderRadius: isMobile ? 6 : 10,
-                  pointerEvents: "none",
-                  opacity: isHovered ? 1 : 0.79,
-                  transition: "opacity 0.2s ease",
+                  display: "block",
+                  backfaceVisibility: "visible",
+                  cursor: "pointer",
+                  transition: "transform 0.6s ease-in-out, box-shadow 0.2s ease",
+                  pointerEvents: "auto",
+                  backgroundColor: "rgba(255,255,255,0.01)",
                 }}
               >
-                {/* Tech Stack Icons */}
-                {panel.stack && (
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: isMobile ? "2px" : "4px",
-                      zIndex: 2,
-                      marginLeft: isMobile ? `${responsivePanelWidth - 34}px` : "296px",
-                      marginTop: isMobile ? "4px" : "7px",
-                    }}
-                  >
-                    {panel.stack.map((iconUrl, i) => (
-                      <img
-                        key={i}
-                        src={iconUrl}
-                        alt="tech-icon"
-                        style={{
-                          width: isMobile ? "18px" : "26px",
-                          height: isMobile ? "18px" : "26px",
-                          objectFit: "contain",
-                          filter: "drop-shadow(0px 1px 2px rgba(0,0,0,0.3))",
-                        }}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </a>
-          );
-        })}
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(255, 74, 8, 0.6)",
+                    backgroundImage: `url(${panel.image})`,
+                    backgroundSize: isMobile ? "cover" : "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: isMobile ? "center" : "left",
+                    display: "flex",
+                    alignItems: "flex-start",
+                    borderRadius: isMobile ? 6 : 10,
+                    pointerEvents: "none",
+                    opacity: isHovered ? 1 : 0.73,
+                    transition: "opacity 0.2s ease",
+                  }}
+                >
+                  {/* Tech Stack Icons */}
+                  {panel.stack && (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: isMobile ? "2px" : "4px",
+                        zIndex: 2,
+                        marginLeft: isMobile ? `${responsivePanelWidth - 34}px` : "296px",
+                        marginTop: isMobile ? "4px" : "7px",
+                      }}
+                    >
+                      {panel.stack.map((iconUrl, i) => (
+                        <img
+                          key={i}
+                          src={iconUrl}
+                          alt="tech-icon"
+                          style={{
+                            width: isMobile ? "18px" : "26px",
+                            height: isMobile ? "18px" : "26px",
+                            objectFit: "contain",
+                            filter: "drop-shadow(0px 1px 2px rgba(0,0,0,0.3))",
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </a>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

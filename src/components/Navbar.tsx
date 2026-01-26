@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+
 export interface NavLinkItem {
   id: string;
   title: string;
@@ -9,7 +10,7 @@ export interface NavLinkItem {
 interface NavbarProps {
   links: NavLinkItem[];
   sticky?: boolean;
-  offsetY?: number; // for scroll offsets if needed
+  offsetY?: number;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -31,7 +32,6 @@ const Navbar: React.FC<NavbarProps> = ({
         sticky ? "sticky top-0 z-50" : ""
       } bg-gradient-to-b from-black/100 to-black/0`}
     >
-
       {/* Desktop Menu */}
       <ul className="hidden sm:flex items-center flex-1 justify-end gap-8">
         {links.map((nav) => (
@@ -39,7 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({
             <Link
               to={nav.to}
               onClick={handleScrollToTop}
-              className={`font-poppins text-primary-reddish text-sm lg:text-lg`}
+              className={`font-poppins text-primary-reddish text-sm lg:text-lg hover:opacity-80 transition-opacity`}
             >
               {nav.title}
             </Link>
@@ -48,25 +48,42 @@ const Navbar: React.FC<NavbarProps> = ({
       </ul>
 
       {/* Mobile Menu */}
-      <div className="sm:hidden flex items-center">
+      <div className="sm:hidden flex flex-1 justify-end items-center">
+        {/* Hamburger Button */}
         <button
-          className="w-7 h-7"
           onClick={() => setToggle((prev) => !prev)}
+          className="w-10 h-10 flex flex-col justify-center items-center gap-1.5 bg-primary-reddish/20 rounded-lg backdrop-blur-sm z-50"
+          aria-label="Toggle menu"
         >
-          {toggle ? "✕" : "☰"} {/* simple hamburger / close */}
+          <span
+            className={`w-6 h-0.5 bg-primary-reddish transition-transform duration-300 ${
+              toggle ? "rotate-45 translate-y-2" : ""
+            }`}
+          />
+          <span
+            className={`w-6 h-0.5 bg-primary-reddish transition-opacity duration-300 ${
+              toggle ? "opacity-0" : ""
+            }`}
+          />
+          <span
+            className={`w-6 h-0.5 bg-primary-reddish transition-transform duration-300 ${
+              toggle ? "-rotate-45 -translate-y-2" : ""
+            }`}
+          />
         </button>
 
+        {/* Mobile Menu Dropdown */}
         <div
           className={`${
             toggle ? "flex" : "hidden"
-          } absolute top-16 right-4 p-4 bg-black-gradient rounded-xl flex-col gap-4 z-20`}
+          } absolute top-16 right-4 p-6 bg-gray-900/95 rounded-lg flex-col gap-4 min-w-[200px] backdrop-blur-sm`}
         >
           {links.map((nav) => (
             <Link
               key={nav.id}
               to={nav.to}
               onClick={handleScrollToTop}
-              className={`font-poppins text-white text-base`}
+              className={`font-poppins text-primary-reddish text-base hover:opacity-80 transition-opacity`}
             >
               {nav.title}
             </Link>
