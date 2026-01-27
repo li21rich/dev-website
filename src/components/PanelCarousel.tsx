@@ -19,8 +19,8 @@ const DRAG_THRESHOLD = 5;
 const PanelCarousel: React.FC<PanelCarouselProps> = ({
   panels,
   radius = 315,
-  panelWidth = 305 * 1.08,
-  panelHeight = 200 * 1.08,
+  panelWidth = 300 * 1.18,
+  panelHeight = 200 * 1.18,
   className = "",
 }) => {
   const [rotationY, setRotationY] = useState(0);
@@ -170,68 +170,79 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
-      {/* Toggle Switch */}
+
       <div
         style={{
           position: "absolute",
-          top: isMobile ? "-190px" : "-170px",
-          left: isMobile ? "105px" : "245px",
+          top: "-190px",
+          left: isMobile ? "96px" : "224px",
           transform: "translateX(-50%)",
           zIndex: 1000,
           display: "flex",
-          alignItems: "center",
-          gap: "12px",
+          backgroundColor: "rgba(0, 0, 0, 0.05)",
+          backdropFilter: "blur(10px)",
+          borderRadius: "20px",
+          padding: "4px",
+          border: "1px solid rgba(0,0,0,0.1)",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
           pointerEvents: "auto",
         }}
       >
-        <span
+        {/* The Sliding Background */}
+        <div
           style={{
-            fontSize: isMobile ? "13px" : "15px",
-            fontWeight: "500",
-            color: isFlattened ? "#666" : "#FF4A08",
-            transition: "color 0.3s ease",
+            position: "absolute",
+            left: "4px",
+            top: "4px",
+            bottom: "4px",
+            width: "calc(50% - 4px)",
+            backgroundColor: "#FF4A08", 
+            borderRadius: "16px",
+            transform: isFlattened ? "translateX(100%)" : "translateX(0)",
+            transition: "transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)",
+            boxShadow: "0 2px 5px rgba(255, 74, 8, 0.3)",
+          }}
+        />
+
+        {/* Carousel Button */}
+        <button
+          onClick={() => setIsFlattened(false)}
+          style={{
+            position: "relative",
+            padding: "7px",
+            fontSize: "14px",
+            fontWeight: !isFlattened ? "600" : "400",
+            color: !isFlattened ? "#000000" : "#FF4A08",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            zIndex: 1,
+            transition: "color 0.3s",
+            width: "80px", 
           }}
         >
           Carousel
-        </span>
+        </button>
+
+        {/* Flipbook Button */}
         <button
-          onClick={toggleFlatten}
+          onClick={() => setIsFlattened(true)}
           style={{
             position: "relative",
-            width: isMobile ? "48px" : "56px",
-            height: isMobile ? "26px" : "30px",
-            backgroundColor: isFlattened ? "#FF4A08" : "#ddd",
-            borderRadius: "15px",
+            padding: "7px",
+            fontSize: "14px",
+            fontWeight: !isFlattened ?  "400" : "600",
+            color: isFlattened ? "#000000" : "#FF4A08",
+            background: "none",
             border: "none",
             cursor: "pointer",
-            transition: "background-color 0.3s ease",
-            boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.2)",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: "3px",
-              left: isFlattened ? (isMobile ? "25px" : "29px") : "3px",
-              width: isMobile ? "20px" : "24px",
-              height: isMobile ? "20px" : "24px",
-              backgroundColor: "white",
-              borderRadius: "50%",
-              transition: "left 0.3s ease",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-            }}
-          />
-        </button>
-        <span
-          style={{
-            fontSize: isMobile ? "13px" : "15px",
-            fontWeight: "500",
-            color: isFlattened ? "#FF4A08" : "#666",
-            transition: "color 0.3s ease",
+            zIndex: 1,
+            transition: "color 0.3s",
+            width: "80px",
           }}
         >
           Flipbook
-        </span>
+        </button>
       </div>
 
       <div
@@ -324,7 +335,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
                         flexDirection: "column",
                         gap: isMobile ? "2px" : "4px",
                         zIndex: 2,
-                        marginLeft: isMobile ? `${responsivePanelWidth - 34}px` : "296px",
+                        marginLeft: isMobile ? `${responsivePanelWidth - 34}px` : "322px", // offset
                         marginTop: isMobile ? "4px" : "7px",
                       }}
                     >

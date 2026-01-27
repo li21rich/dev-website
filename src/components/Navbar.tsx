@@ -28,7 +28,7 @@ const Navbar: React.FC<NavbarProps> = ({
   return (
     <nav
       id="navbar"
-      className={`w-full flex py-3 pb-14 justify-between items-center pl-4 pr-8 ${
+      className={`font-semibold w-full flex py-3 pb-14 justify-between items-center pl-4 pr-8 ${
         sticky ? "sticky top-0 z-50" : ""
       } bg-gradient-to-b from-black/100 to-black/0`}
     >

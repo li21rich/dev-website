@@ -1,43 +1,46 @@
 import React, { useRef, useEffect } from "react";
 
 interface NodeBackgroundProps {
-  nodeCount?: number;
+  baseNodeCount?: number;
   cursorEdgeDistance?: number;
-  gravityStrength?: number;
+  gravityStrength?: number; // How strongly mouse pulls
   nodeColor?: string;
   cursorEdgeColor?: string;
-  fullScreen?: boolean;
   layers?: number;
 }
 
 interface Node {
   x: number;
   y: number;
-  vx: number;
+  vx: number; // Interactive Velocity (Mouse push/pull)
   vy: number;
+  driftVx: number; // Constant drifting velocity
+  driftVy: number;
   layer: number;
+  twinklePhase: number; // For the sine wave
+  twinkleSpeed: number; // How fast it twinkles
 }
 
 function hexToRgb(hex: string) {
   const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
-  if (!m) return [255, 111, 0]; // fallback
+  if (!m) return [255, 111, 0];
   return [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)];
 }
 
-
 const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
-  nodeCount = 950,
-  cursorEdgeDistance = 200,
-  gravityStrength = 0.25,
+  baseNodeCount = 50,
+  cursorEdgeDistance = 190,
+  gravityStrength = 0.24,
   nodeColor = "#FF6F00",
   cursorEdgeColor = "rgba(255,111,0,0.5)",
-  layers = 5,
+  layers = 7,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nodesRef = useRef<Node[]>([]);
   const cursorRef = useRef<{ x: number; y: number } | null>(null);
   const rafRef = useRef<number | null>(null);
   const scrollYRef = useRef(0);
+  const timeRef = useRef(0); // Keeps track of time for twinkle math
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -45,99 +48,140 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const resize = () => {
+    const initNodes = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
 
-    // initialize nodes with random layers
-    nodesRef.current = Array.from({ length: nodeCount }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: (Math.random() - 0.5) * 0.6,
-      layer: Math.floor(Math.random() * layers),
-    }));
+      // Density: 1 node per 2000 pixels roughly
+      const area = window.innerWidth * window.innerHeight;
+      const calculatedCount = Math.floor(area / 2000);
+
+      nodesRef.current = Array.from({ length: calculatedCount }, () => {
+        // Random drift direction between -0.2 and 0.2
+        const driftSpeed = 0.2;
+        return {
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            vx: 0,
+            vy: 0,
+            driftVx: (Math.random() - 0.5) * driftSpeed,
+            driftVy: (Math.random() - 0.5) * driftSpeed,
+            layer: Math.floor(Math.random() * layers),
+            twinklePhase: Math.random() * Math.PI * 2,
+            twinkleSpeed: 0.02 + Math.random() * 0.04,
+        };
+      });
+    };
+
+    initNodes();
+    window.addEventListener("resize", initNodes);
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const cursor = cursorRef.current;
       const scrollOffset = scrollYRef.current;
+      const [r, g, b] = hexToRgb(nodeColor);
+      
+      // Increment time for sine wave calculations
+      timeRef.current += 1; 
 
-      // First update positions
       nodesRef.current.forEach((n) => {
-        // Cursor gravity + minDist
-        if (cursor) {
-          const depthFactor = 0.1 + 0.15 * n.layer;
-          const px = n.x;
-          const py = n.y - scrollOffset * depthFactor;
+        const depthFactor = Math.pow(n.layer / (layers - 1), 1.9) * 0.2 + 0.01;
+        let py = n.y - scrollOffset * depthFactor;
 
-          const dx = cursor.x - px;
+        // --- 1. RECYCLING (Wrap around screen) ---
+        if (n.x < -50) n.x = canvas.width + 50;
+        if (n.x > canvas.width + 50) n.x = -50;
+        
+        if (py < -50) {
+          n.y += canvas.height + 100;
+          py += canvas.height + 100;
+        } else if (py > canvas.height + 50) {
+          n.y -= canvas.height + 100;
+          py -= canvas.height + 100;
+        }
+
+        // --- 2. PHYSICS ---
+        
+        // Mouse Interaction
+        if (cursor) {
+          const dx = cursor.x - n.x;
           const dy = cursor.y - py;
           const dist = Math.hypot(dx, dy);
-                    const minDist = 66;
+          const minDist = 66; // Personal space radius
 
-                    if (dist < minDist) {
-            const repel = (minDist - dist) * 0.006;
+          if (dist < minDist) {
+            // Strong Repel if too close
+            const repel = (minDist - dist) * 0.008;
             n.vx -= (dx / dist) * repel;
             n.vy -= (dy / dist) * repel;
           } else if (dist < cursorEdgeDistance) {
+            // Gentle Attract if within range
             const force = (gravityStrength * (1 - dist / cursorEdgeDistance)) / dist;
             n.vx += dx * force;
             n.vy += dy * force;
           }
-
         }
 
-        // update velocity with damping
-        n.vx *= 0.95;
-        n.vy *= 0.95;
+        // Apply friction to the interactive velocity only
+        n.vx *= 0.94;
+        n.vy *= 0.94;
 
-        n.x += n.vx;
-        n.y += n.vy;
-      });
+        // Apply velocities
+        // We add driftVx to keep them moving when not interacted with
+        n.x += n.vx + n.driftVx;
+        n.y += n.vy + n.driftVy;
 
-      // Draw nodes first
-      nodesRef.current.forEach((n) => {
-        const depthFactor = 0.1 + 0.15 * n.layer;
-        const drawX = n.x;
+        // Optional: Very slow random wandering (Brownian motion)
+        // This simulates "repel" over time by preventing them from staying on the same path
+        if (Math.random() < 0.01) {
+             n.driftVx += (Math.random() - 0.5) * 0.05;
+             n.driftVy += (Math.random() - 0.5) * 0.05;
+             // Clamp drift so they don't get too fast
+             const maxDrift = 0.3;
+             n.driftVx = Math.max(-maxDrift, Math.min(maxDrift, n.driftVx));
+             n.driftVy = Math.max(-maxDrift, Math.min(maxDrift, n.driftVy));
+        }
+
         const drawY = n.y - scrollOffset * depthFactor;
 
-        if (drawY < -50 || drawY > canvas.height + 50) return;
-        
-        const [r, g, b] = hexToRgb(nodeColor);
-        ctx.fillStyle = `rgba(${r},${g},${b},${0.6 + 0.4 * (n.layer / (layers - 1))})`;
-        ctx.beginPath();
-        ctx.arc(drawX, drawY, 0.94, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      // Draw edges after nodes
-      if (cursor) {
-        nodesRef.current.forEach((n) => {
-          const depthFactor = 0.1 + 0.15 * n.layer;
-          const px = n.x;
-          const py = n.y - scrollOffset * depthFactor;
+        // --- 3. DRAWING ---
+        if (drawY > -50 && drawY < canvas.height + 50) {
+            
+            // TWINKLE LOGIC
+            // Base opacity + Sine wave fluctuation
+            const baseAlpha = 0.2 + 0.6 * (n.layer / (layers - 1));
+            const twinkle = Math.sin(timeRef.current * n.twinkleSpeed + n.twinklePhase);
+            // Oscillate opacity by +/- 0.15 based on twinkle state
+            const dynamicAlpha = Math.max(0.1, Math.min(1, baseAlpha + (twinkle * 0.15)));
 
-          const dx = cursor.x - px;
-          const dy = cursor.y - py;
-          const dist = Math.hypot(dx, dy);
-
-          if (dist < cursorEdgeDistance) {
-            const opacity = 1 - dist / cursorEdgeDistance;
-            ctx.strokeStyle = cursorEdgeColor.replace(
-              /[\d.]+\)$/,
-              `${opacity * 0.5})`
-            );
-            ctx.lineWidth = 1.5;
+            ctx.fillStyle = `rgba(${r},${g},${b},${dynamicAlpha})`;
             ctx.beginPath();
-            ctx.moveTo(cursor.x, cursor.y);
-            ctx.lineTo(px, py);
-            ctx.stroke();
-          }
-        });
-      }
+            ctx.arc(n.x, drawY, 0.9, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Connect lines to cursor
+            if (cursor) {
+                const dx = cursor.x - n.x;
+                const dy = cursor.y - drawY;
+                const dist = Math.hypot(dx, dy);
+
+                if (dist < cursorEdgeDistance) {
+                    const opacity = 1 - dist / cursorEdgeDistance;
+                    // Lines are fainter than dots
+                    ctx.strokeStyle = cursorEdgeColor.replace(
+                        /[\d.]+\)$/,
+                        `${opacity * 0.4})`
+                    );
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath();
+                    ctx.moveTo(cursor.x, cursor.y);
+                    ctx.lineTo(n.x, drawY);
+                    ctx.stroke();
+                }
+            }
+        }
+      });
 
       rafRef.current = requestAnimationFrame(draw);
     };
@@ -145,21 +189,38 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
     draw();
 
     return () => {
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", initNodes);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [nodeCount, cursorEdgeDistance, gravityStrength, nodeColor, cursorEdgeColor, layers]);
+  }, [baseNodeCount, cursorEdgeDistance, gravityStrength, nodeColor, cursorEdgeColor, layers]);
 
-  // track cursor
+  // Input Handling (Mouse/Touch)
   useEffect(() => {
-    const move = (e: MouseEvent) => {
+    const onMouseMove = (e: MouseEvent) => {
       cursorRef.current = { x: e.clientX, y: e.clientY };
     };
-    document.addEventListener("mousemove", move);
-    return () => document.removeEventListener("mousemove", move);
+    
+    const onTouchMove = (e: TouchEvent) => {
+        if(e.touches.length > 0) {
+            cursorRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+    };
+
+    const onTouchEnd = () => {
+        cursorRef.current = null;
+    };
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("touchmove", onTouchMove, { passive: true });
+    document.addEventListener("touchend", onTouchEnd);
+    
+    return () => {
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("touchmove", onTouchMove);
+        document.removeEventListener("touchend", onTouchEnd);
+    };
   }, []);
 
-  // track scroll
   useEffect(() => {
     const scroll = () => (scrollYRef.current = window.scrollY);
     window.addEventListener("scroll", scroll);
