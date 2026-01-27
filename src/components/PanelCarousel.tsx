@@ -49,10 +49,14 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
   }, []);
 
   // Responsive sizing
-  const baseRadius = isMobile ? Math.min(radius * 0.6, 200) : radius;
-  const responsiveRadius = isFlattened ? baseRadius * .6 : baseRadius;
-  const responsivePanelWidth = isMobile ? Math.min(panelWidth * 0.7, 220) : panelWidth;
-  const responsivePanelHeight = isMobile ? Math.min(panelHeight * 0.7, 150) : panelHeight;
+  const baseRadius = isMobile ? isFlattened ? 260 : Math.min(radius * 0.6, 200) : radius;
+  const responsiveRadius = isFlattened ? baseRadius * 0.6 : baseRadius;
+  const responsivePanelWidth = isMobile
+    ? isFlattened ? 300 : Math.min(panelWidth, 224)
+    : panelWidth;
+  const responsivePanelHeight = isMobile
+    ? isFlattened ? 200 : Math.min(panelHeight, 150)
+    : panelHeight;
 
   // --- Mouse Drag Handling ---
   const onMouseDown = (e: React.MouseEvent) => {
@@ -132,7 +136,8 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
 
   const onWheel = (e: WheelEvent) => {
     if (!containerRef.current) return;
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    const delta =
+      Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     if (Math.abs(delta) < 1) return;
     e.preventDefault();
     const newRot = currentRotation.current + delta * -0.15;
@@ -165,7 +170,6 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
-
       <div
         style={{
           position: "absolute",
@@ -191,7 +195,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
             top: "4px",
             bottom: "4px",
             width: "calc(50% - 4px)",
-            backgroundColor: "#FF4A08", 
+            backgroundColor: "#FF4A08",
             borderRadius: "16px",
             transform: isFlattened ? "translateX(100%)" : "translateX(0)",
             transition: "transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)",
@@ -213,7 +217,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
             cursor: "pointer",
             zIndex: 1,
             transition: "color 0.3s",
-            width: "80px", 
+            width: "83px",
           }}
         >
           Carousel
@@ -226,14 +230,14 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
             position: "relative",
             padding: "7px",
             fontSize: "16px",
-            fontWeight: !isFlattened ?  "400" : "600",
+            fontWeight: !isFlattened ? "400" : "600",
             color: isFlattened ? "#000000" : "#FF4A08",
             background: "none",
             border: "none",
             cursor: "pointer",
             zIndex: 1,
             transition: "color 0.3s",
-            width: "80px",
+            width: "83px",
           }}
         >
           Flipbook
@@ -267,7 +271,9 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
             height: "100%",
             position: "relative",
             transformStyle: "preserve-3d",
-            transform: `rotateX(${tiltX}deg) rotateY(${rotationY + tiltY}deg)`,
+            // UPDATED TRANSFORM HERE:
+            transform: `${isMobile && isFlattened ? "translateX(-40%)" : ""
+              } rotateX(${tiltX}deg) rotateY(${rotationY + tiltY}deg)`,
             transition: isDragging ? "none" : "transform 0.5s ease-out",
             zIndex: 10,
             pointerEvents: "none",
@@ -285,7 +291,9 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => handlePanelClick(e, panel.link)}
-                onMouseEnter={() => !isDragging && !isMobile && setHoveredIndex(index)}
+                onMouseEnter={() =>
+                  !isDragging && !isMobile && setHoveredIndex(index)
+                }
                 onMouseLeave={() => setHoveredIndex(null)}
                 draggable={false}
                 style={{
@@ -300,7 +308,8 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
                   display: "block",
                   backfaceVisibility: "visible",
                   cursor: "pointer",
-                  transition: "transform 0.6s ease-in-out, box-shadow 0.2s ease",
+                  transition:
+                    "transform 0.6s ease-in-out, box-shadow 0.2s ease",
                   pointerEvents: "auto",
                   backgroundColor: "rgba(255,255,255,0.01)",
                 }}
@@ -311,9 +320,9 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
                     height: "100%",
                     backgroundColor: "rgba(255, 74, 8, 0.6)",
                     backgroundImage: `url(${panel.image})`,
-                    backgroundSize: isMobile ? "cover" : "contain",
+                    backgroundSize: "contain",
                     backgroundRepeat: "no-repeat",
-                    backgroundPosition: isMobile ? "center" : "left",
+                    backgroundPosition: "left",
                     display: "flex",
                     alignItems: "flex-start",
                     borderRadius: isMobile ? 6 : 10,
@@ -328,9 +337,11 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: isMobile ? "2px" : "4px",
+                        gap: "4px",
                         zIndex: 2,
-                        marginLeft: isMobile ? `${responsivePanelWidth - 34}px` : "322px", // offset
+                        marginLeft: isMobile
+                          ? isFlattened ? "273px" : "203px"
+                          : "322px", // offset
                         marginTop: isMobile ? "4px" : "7px",
                       }}
                     >

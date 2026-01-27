@@ -30,10 +30,10 @@ const Navbar: React.FC<NavbarProps> = ({
       id="navbar"
       className={`font-semibold w-full flex py-3 pb-14 justify-between items-center pl-4 pr-8 ${
         sticky ? "sticky top-0 z-50" : ""
-      } bg-gradient-to-b from-black/100 to-black/0`}
+      } bg-gradient-to-b from-black/100 to-black/0 pointer-events-none`} // Disable events for the gradient
     >
       {/* Desktop Menu */}
-      <ul className="hidden sm:flex items-center flex-1 justify-end gap-8">
+      <ul className="hidden sm:flex items-center flex-1 justify-end gap-8 pointer-events-auto"> {/* Re-enable for links */}
         {links.map((nav) => (
           <li key={nav.id}>
             <Link
@@ -48,11 +48,11 @@ const Navbar: React.FC<NavbarProps> = ({
       </ul>
 
       {/* Mobile Menu */}
-      <div className="sm:hidden flex flex-1 justify-end items-center">
+      <div className="sm:hidden flex flex-1 justify-end items-center pointer-events-none">
         {/* Hamburger Button */}
         <button
           onClick={() => setToggle((prev) => !prev)}
-          className="w-10 h-10 flex flex-col justify-center items-center gap-1.5 bg-primary-reddish/20 rounded-lg backdrop-blur-sm z-50"
+          className="w-10 h-10 flex flex-col justify-center items-center gap-1.5 bg-primary-reddish/20 rounded-lg backdrop-blur-sm z-50 pointer-events-auto" // Re-enable for button
           aria-label="Toggle menu"
         >
           <span
@@ -76,7 +76,7 @@ const Navbar: React.FC<NavbarProps> = ({
         <div
           className={`${
             toggle ? "flex" : "hidden"
-          } absolute top-16 right-4 p-6 bg-gray-900/95 rounded-lg flex-col gap-4 min-w-[200px] backdrop-blur-sm`}
+          } absolute top-16 right-4 p-6 rounded-lg flex-col gap-4 min-w-[200px] backdrop-blur-sm pointer-events-auto`} // Re-enable for dropdown
         >
           {links.map((nav) => (
             <Link

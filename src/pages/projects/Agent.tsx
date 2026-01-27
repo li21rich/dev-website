@@ -6,15 +6,14 @@ const Agent = () => {
   return (
     <div className="w-full max-w-full overflow-x-clip">
       <ReactiveNodeBackground />
-
       <SlideIn direction="top" delay={200} duration={1600} className="z-10 relative">
-        <div className="relative z-10 p-8 sm:ml-32 sm:mt-16 text-primary-reddish">
+        <div className="relative z-10 p-4 sm:p-8 ml-4 sm:ml-32 mt-8 sm:mt-16 text-primary-reddish">         
           <h1 className="text-4xl font-bold mb-8">Here’s what I’m working on.</h1>
-          <p className="text-[18px] w-[700px] mb-4 leading-relaxed">
+          <div className="text-[18px] max-w-[700px] w-full mb-4 leading-relaxed">            
             Agent is a fully agentic AI desktop app that completes any complex task across the OS using a lightweight, cloud-native inference stack. No local GPU weights required.
-            <div className="my-4"/>
+            <div className="my-4" />
             Much like a lightweight, totally portable Omnitool/Gemini Computer Use implementation that is deployed directly onto your own OS, Agent uses computer vision to "see" the screen, an LLM to plan actions, and a low-level driver to simulate human-like mouse and keyboard input.
-            <div className="my-4"/>
+            <div className="my-4" />
             Built with Python, PyTorch, and Hugging Face. At the moment, it uses a
             <a
               href="https://github.com/li21rich/omniparser-api-2026"
@@ -24,8 +23,7 @@ const Agent = () => {
             >
               {" "}self-hosted Microsoft OmniParser API
             </a>{" "}deployed on Fly.io GPUs for GUI object detection and Gemini (via OpenRouter) for MLLM and LLM embeddings.
-            
-          </p>
+          </div>
           <CmdPanel />
           <div className="mb-94" />
         </div>
