@@ -58,7 +58,7 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
 
       nodesRef.current = Array.from({ length: calculatedCount }, () => {
         // Random drift direction between -0.2 and 0.2
-        const driftSpeed = 0.2;
+        const driftSpeed = 0.25;
         return {
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
@@ -77,6 +77,7 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
     window.addEventListener("resize", initNodes);
 
     const draw = () => {
+      ctx.globalCompositeOperation = "lighter";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const cursor = cursorRef.current;
       const scrollOffset = scrollYRef.current;
@@ -124,21 +125,20 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
         }
 
         // Apply friction to the interactive velocity only
-        n.vx *= 0.94;
-        n.vy *= 0.94;
+        n.vx *= 0.93;
+        n.vy *= 0.93;
 
         // Apply velocities
         // We add driftVx to keep them moving when not interacted with
         n.x += n.vx + n.driftVx;
         n.y += n.vy + n.driftVy;
 
-        // Optional: Very slow random wandering (Brownian motion)
-        // This simulates "repel" over time by preventing them from staying on the same path
+        // Brownian Motion
         if (Math.random() < 0.01) {
-             n.driftVx += (Math.random() - 0.5) * 0.05;
-             n.driftVy += (Math.random() - 0.5) * 0.05;
+             n.driftVx += (Math.random() - 0.4) * 0.08;
+             n.driftVy += (Math.random() - 0.4) * 0.08;
              // Clamp drift so they don't get too fast
-             const maxDrift = 0.3;
+             const maxDrift = 1;
              n.driftVx = Math.max(-maxDrift, Math.min(maxDrift, n.driftVx));
              n.driftVy = Math.max(-maxDrift, Math.min(maxDrift, n.driftVy));
         }
@@ -150,14 +150,12 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
             
             // TWINKLE LOGIC
             // Base opacity + Sine wave fluctuation
-            const baseAlpha = 0.2 + 0.6 * (n.layer / (layers - 1));
-            const twinkle = Math.sin(timeRef.current * n.twinkleSpeed + n.twinklePhase);
-            // Oscillate opacity by +/- 0.15 based on twinkle state
-            const dynamicAlpha = Math.max(0.1, Math.min(1, baseAlpha + (twinkle * 0.15)));
+            const baseAlpha = 0.2 + 0.8 * (n.layer / (layers - 1));
+            const dynamicAlpha = baseAlpha + 1.5 * Math.sin(timeRef.current * n.twinkleSpeed + n.twinklePhase);
 
             ctx.fillStyle = `rgba(${r},${g},${b},${dynamicAlpha})`;
             ctx.beginPath();
-            ctx.arc(n.x, drawY, 0.9, 0, Math.PI * 2);
+            ctx.arc(n.x, drawY, 1, 0, Math.PI * 2);
             ctx.fill();
 
             // Connect lines to cursor
