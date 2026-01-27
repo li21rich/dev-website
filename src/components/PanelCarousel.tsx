@@ -163,11 +163,6 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
     console.log("Navigating to:", link);
   };
 
-  // --- Toggle Button Handler ---
-  const toggleFlatten = () => {
-    setIsFlattened(!isFlattened);
-  };
-
   return (
     <div style={{ position: "relative", width: "100%" }}>
 
@@ -210,7 +205,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
           style={{
             position: "relative",
             padding: "7px",
-            fontSize: "14px",
+            fontSize: "16px",
             fontWeight: !isFlattened ? "600" : "400",
             color: !isFlattened ? "#000000" : "#FF4A08",
             background: "none",
@@ -230,7 +225,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
           style={{
             position: "relative",
             padding: "7px",
-            fontSize: "14px",
+            fontSize: "16px",
             fontWeight: !isFlattened ?  "400" : "600",
             color: isFlattened ? "#000000" : "#FF4A08",
             background: "none",

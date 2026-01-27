@@ -1,11 +1,10 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
 const PROMPT_TEXT = "Enter a task for Agent:   ";
 const USER_COMMAND = "subscribe to github on yt";
 
-// The system logs that appear AFTER the user finishes typing
 const SYSTEM_LOGS = [
-  { text: "", delay: 100 }, // Empty line after input
+  { text: "", delay: 400 },
   { text: "# Press 'Alt + A' at any time to force quit.", delay: 100 },
   { text: "# Conducting first screen read...", delay: 600 },
   { text: "# Screenshot taken...", delay: 400 },
@@ -24,52 +23,59 @@ const SYSTEM_LOGS = [
 
 export default function CmdPanel() {
   const [lines, setLines] = useState<string[]>([]);
-  const mountedRef = useRef(true);
 
   useEffect(() => {
-    mountedRef.current = true;
+    // 1. Define a local flag specific to THIS run of the effect
+    let isMounted = true;
 
     const runSequence = async () => {
-      if (!mountedRef.current) return;
-
-      // 1. Reset
-      setLines([PROMPT_TEXT]);
+      // Check flag before starting
+      if (!isMounted) return;
       
-      // 2. Typewriter Effect for User Input
+      // Initial delay
+      await new Promise((r) => setTimeout(r, 2000));
+      if (!isMounted) return;
+
+      // --- Sequence Start ---
+      setLines([PROMPT_TEXT]);
+
+      // Typewriter Effect
       let currentInput = "";
       for (let i = 0; i < USER_COMMAND.length; i++) {
-        // Random typing delay between 30ms and 90ms for realism
-        const typingDelay = Math.random() * 60 + 30; 
+        if (!isMounted) return; // Check flag inside loops
+        
+        const typingDelay = Math.random() * 60 + 30;
         await new Promise((r) => setTimeout(r, typingDelay));
-        
-        if (!mountedRef.current) return;
-        
+
         currentInput += USER_COMMAND[i];
         setLines([PROMPT_TEXT + currentInput]);
       }
 
-      // 3. Pause before system response (simulate hitting Enter)
+      // Pause before logs
       await new Promise((r) => setTimeout(r, 800));
-      if (!mountedRef.current) return;
+      if (!isMounted) return;
 
-      // 4. Process System Logs
+      // Process Logs
       for (const log of SYSTEM_LOGS) {
+        if (!isMounted) return; // Check flag inside loops
         await new Promise((r) => setTimeout(r, log.delay));
-        if (!mountedRef.current) return;
-        setLines((prev) => [...prev, log.text]);
+        
+        // Use functional state update to safely append
+        setLines((prev) => (log.text ? [...prev, log.text] : prev));
       }
 
-      // 5. Wait at the end, then restart loop
+      // Wait and Restart
       await new Promise((r) => setTimeout(r, 4000));
-      if (mountedRef.current) {
+      if (isMounted) {
         runSequence();
       }
     };
 
     runSequence();
 
+    // 2. Cleanup function kills ONLY this specific run
     return () => {
-      mountedRef.current = false;
+      isMounted = false;
     };
   }, []);
 
@@ -80,7 +86,7 @@ export default function CmdPanel() {
           {l}
         </div>
       ))}
-      <span className="animate-pulse">▍</span>
+      <span className="strong-pulse">▍</span>
     </div>
   );
 }
