@@ -68,7 +68,7 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
             driftVy: (Math.random() - 0.5) * driftSpeed,
             layer: Math.floor(Math.random() * layers),
             twinklePhase: Math.random() * Math.PI * 2,
-            twinkleSpeed: 0.02 + Math.random() * 0.04,
+            twinkleSpeed: 0.02 + Math.random() * 0.09,
         };
       });
     };
@@ -77,7 +77,6 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
     window.addEventListener("resize", initNodes);
 
     const draw = () => {
-      ctx.globalCompositeOperation = "lighter";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const cursor = cursorRef.current;
       const scrollOffset = scrollYRef.current;
@@ -135,8 +134,8 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
 
         // Brownian Motion
         if (Math.random() < 0.01) {
-             n.driftVx += (Math.random() - 0.4) * 0.08;
-             n.driftVy += (Math.random() - 0.4) * 0.08;
+             n.driftVx += (Math.random() - 0.5) * 0.08;
+             n.driftVy += (Math.random() - 0.5) * 0.08;
              // Clamp drift so they don't get too fast
              const maxDrift = 1;
              n.driftVx = Math.max(-maxDrift, Math.min(maxDrift, n.driftVx));
@@ -150,8 +149,8 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
             
             // TWINKLE LOGIC
             // Base opacity + Sine wave fluctuation
-            const baseAlpha = 0.2 + 0.8 * (n.layer / (layers - 1));
-            const dynamicAlpha = baseAlpha + 1.5 * Math.sin(timeRef.current * n.twinkleSpeed + n.twinklePhase);
+            const baseAlpha = 0.3 + 0.7 * (n.layer / (layers - 1));
+            const dynamicAlpha = baseAlpha + 0.05 * Math.sin(timeRef.current * n.twinkleSpeed + n.twinklePhase);
 
             ctx.fillStyle = `rgba(${r},${g},${b},${dynamicAlpha})`;
             ctx.beginPath();
