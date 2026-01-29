@@ -86,7 +86,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
     if (isDragging) {
       const deltaX = e.clientX - lastX.current;
       lastX.current = e.clientX;
-      const newRot = currentRotation.current + deltaX * 0.3;
+      const newRot = currentRotation.current + deltaX * 0.34;
       currentRotation.current = newRot;
       setRotationY(newRot);
       didSpin.current = true;
@@ -121,7 +121,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
     if (isDragging) {
       const deltaX = touch.clientX - lastX.current;
       lastX.current = touch.clientX;
-      const newRot = currentRotation.current + deltaX * 0.3;
+      const newRot = currentRotation.current + deltaX * 0.34;
       currentRotation.current = newRot;
       setRotationY(newRot);
       didSpin.current = true;
@@ -140,7 +140,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
       Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     if (Math.abs(delta) < 1) return;
     e.preventDefault();
-    const newRot = currentRotation.current + delta * -0.15;
+    const newRot = currentRotation.current + delta * -0.24;
     currentRotation.current = newRot;
     setRotationY(newRot);
     didSpin.current = true;
@@ -220,7 +220,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
             width: "83px",
           }}
         >
-          Carousel
+          carousel
         </button>
 
         {/* Flipbook Button */}
@@ -240,7 +240,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
             width: "83px",
           }}
         >
-          Flipbook
+          flipbook
         </button>
       </div>
 

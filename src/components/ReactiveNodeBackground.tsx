@@ -127,7 +127,7 @@ const ReactiveNodeBackground: React.FC<NodeBackgroundProps> = ({
         n.vx *= 0.93;
         n.vy *= 0.93;
 
-        // Apply velocities
+        // Apply velocities   
         // We add driftVx to keep them moving when not interacted with
         n.x += n.vx + n.driftVx;
         n.y += n.vy + n.driftVy;
