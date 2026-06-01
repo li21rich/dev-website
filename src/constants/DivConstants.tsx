@@ -4,6 +4,7 @@ import AgentImg from "../assets/agent.png";
 import ESP32Img from "../assets/esp32.png";
 import YAMImg from "../assets/yam.png";
 import TwitterScrapeImg from "../assets/twitterscrape.png";
+import POLYImg from "../assets/poly.png"
 
 // Tech stack icons
 import PythonSvg from "../assets/python.svg";
@@ -56,5 +57,10 @@ export const PORTFOLIO_PROJECTS: ProjectPanel[] = [
     image: TwitterScrapeImg,
     link: "https://github.com/li21rich/twitterscrape",
     stack: [PythonSvg, SeleniumSvg]
+  },
+  {
+    image:POLYImg,
+    link: "https://github.com/li21rich/POLY",
+    stack: [CSvg, ESPIDFSvg, TypescriptSvg, ReactSvg, ViteSvg, TailwindSvg, VercelSvg]
   },
 ];
