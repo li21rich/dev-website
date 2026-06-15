@@ -18,9 +18,9 @@ const DRAG_THRESHOLD = 5;
 
 const PanelCarousel: React.FC<PanelCarouselProps> = ({
   panels,
-  radius = 345,
-  panelWidth = 300 * 1.17,
-  panelHeight = 200 * 1.17,
+  radius = 390,
+  panelWidth = 300 * 1.18,
+  panelHeight = 200 * 1.18,
   className = "",
 }) => {
   const [rotationY, setRotationY] = useState(0);

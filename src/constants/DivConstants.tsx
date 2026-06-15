@@ -5,6 +5,7 @@ import ESP32Img from "../assets/esp32.png";
 import YAMImg from "../assets/yam.png";
 import TwitterScrapeImg from "../assets/twitterscrape.png";
 import POLYImg from "../assets/poly.png"
+import MacroImg from "../assets/macro.png"
 
 // Tech stack icons
 import PythonSvg from "../assets/python.svg";
@@ -63,4 +64,9 @@ export const PORTFOLIO_PROJECTS: ProjectPanel[] = [
     link: "https://github.com/li21rich/POLY",
     stack: [CSvg, ESPIDFSvg, TypescriptSvg, ReactSvg, ViteSvg, TailwindSvg, VercelSvg]
   },
+  {
+    image:MacroImg,
+    link: "https://github.com/li21rich/Windows-Macro-Recorder",
+    stack: [PythonSvg]
+  }
 ];
