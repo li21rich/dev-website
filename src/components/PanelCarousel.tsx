@@ -19,7 +19,7 @@ const DRAG_THRESHOLD = 5;
 const PanelCarousel: React.FC<PanelCarouselProps> = ({
   panels,
   radius = 390,
-  panelWidth = 300 * 1.18,
+  panelWidth = 300 * 1.18, 
   panelHeight = 200 * 1.18,
   className = "",
 }) => {
@@ -31,7 +31,7 @@ const PanelCarousel: React.FC<PanelCarouselProps> = ({
   const [isMobile, setIsMobile] = useState(false);
   const [isFlattened, setIsFlattened] = useState(false);
 
-  const startX = useRef(0);
+  const startX = useRef(0); 
   const lastX = useRef(0);
   const currentRotation = useRef(0);
   const mouseIsDown = useRef(false);
